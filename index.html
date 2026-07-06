@@ -106,21 +106,25 @@
             </div>
         </div>
 
-        <!-- Slide 5: Scratch-to-reveal Card -->
+        <!-- Slide 5: Button-to-reveal Card -->
         <div class="slide" id="slide-5">
             <div class="slide-content text-center">
                 <h3 class="slide-title">Un Mensaje de mi Corazón</h3>
-                <p class="slide-text mb-3">Rasca con tu dedo para descubrir la sorpresa final:</p>
+                <p class="slide-text mb-3">Toca el botón para descubrir la sorpresa final:</p>
                 
                 <div class="scratch-card-container">
-                    <div class="scratch-message">
+                    <div class="scratch-message hidden" id="reveal-message">
                         <h4 class="cursive-text">¡Feliz 15 Cumpleaños!</h4>
                         <p class="message-body">
                             Karen Lorena, eres nuestro mayor orgullo. Sé que el camino ha sido duro en ocasiones, pero tu valentía te hará volar muy alto. Pide un deseo al viento hoy... la vida se encargará de regalártelo. Te queremos con toda el alma.
                         </p>
                         <span class="signature">Con todo mi amor 💖</span>
                     </div>
-                    <canvas id="scratch-canvas" width="300" height="350"></canvas>
+                    <div class="reveal-cover" id="reveal-cover">
+                        <div class="reveal-sparkles">❄️ ✨ ❄️</div>
+                        <h4 class="cursive-text mb-4">¿Preparada para tu deseo?</h4>
+                        <button class="reveal-btn pulse" id="reveal-btn">Tocar para revelar ✨</button>
+                    </div>
                 </div>
             </div>
         </div>

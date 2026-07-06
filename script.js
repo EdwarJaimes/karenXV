@@ -371,143 +371,53 @@ giftBox.addEventListener('click', (e) => {
     }, 800);
 });
 
-// Interactive Scratch Card Logic
-let scratchCanvasInitialized = false;
+// Interactive Button Reveal Card Logic
+let revealCardInitialized = false;
 
 function initScratchCard() {
-    if (scratchCanvasInitialized) return;
+    if (revealCardInitialized) return;
     
-    const canvas = document.getElementById('scratch-canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const revealBtn = document.getElementById('reveal-btn');
+    const revealCover = document.getElementById('reveal-cover');
+    const revealMessage = document.getElementById('reveal-message');
     
-    // Set internal canvas resolution 1:1 with layout size for perfect touch mapping
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    if (!revealBtn) return;
     
-    // Clear and draw cover
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Gradients cover
-    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    grad.addColorStop(0, '#A9DDF7'); // Frozen Blue
-    grad.addColorStop(0.5, '#FFD1DC'); // Pastel Pink
-    grad.addColorStop(1, '#FFF0F5');
-    
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Decorative magical snowflakes
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.font = '24px serif';
-    ctx.fillText('❄️', 30, 60);
-    ctx.fillText('❄️', canvas.width - 40, 90);
-    ctx.fillText('❄️', 70, canvas.height - 40);
-    ctx.fillText('❄️', canvas.width - 60, canvas.height - 70);
-    ctx.fillText('✨', canvas.width / 2, 40);
-    ctx.fillText('✨', canvas.width / 2 - 10, canvas.height - 20);
-    
-    // Instructional text
-    ctx.fillStyle = '#4a6fa5';
-    ctx.font = 'bold 20px "Quicksand", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Rasca con tu dedo', canvas.width / 2, canvas.height / 2 - 20);
-    ctx.font = '16px "Quicksand", sans-serif';
-    ctx.fillText('para ver el deseo ✨', canvas.width / 2, canvas.height / 2 + 10);
-    
-    // Drawing setup
-    let isDrawing = false;
-    
-    function scratch(e) {
-        if (!isDrawing) return;
+    revealBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         
-        const currentRect = canvas.getBoundingClientRect();
-        let clientX, clientY;
+        // Disable button to prevent double triggering
+        revealBtn.disabled = true;
         
-        if (e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else if (e.targetTouches && e.targetTouches.length > 0) {
-            clientX = e.targetTouches[0].clientX;
-            clientY = e.targetTouches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
+        // Play final birthday chord
+        if (audioCtx) {
+            playTone(261.63, 100); // C4
+            playTone(329.63, 100); // E4
+            playTone(392.00, 100); // G4
+            playTone(523.25, 600); // C5
         }
         
-        const x = clientX - currentRect.left;
-        const y = clientY - currentRect.top;
+        // Explode massive congratulations confetti
+        const rect = revealBtn.getBoundingClientRect();
+        spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2, 45, 'butterfly');
+        spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2, 25, 'star');
         
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.beginPath();
-        ctx.arc(x, y, 25, 0, Math.PI * 2);
-        ctx.fill();
+        // Fade out cover
+        revealCover.style.opacity = '0';
+        revealCover.style.transform = 'scale(0.9)';
         
-        // Spawn sparks while scratching
-        if (Math.random() < 0.3) {
-            spawnBurst(clientX, clientY, 2, 'star');
-        }
-        
-        checkScratchPercentage();
-    }
+        setTimeout(() => {
+            revealCover.classList.add('hidden');
+            revealMessage.classList.remove('hidden');
+            
+            // Trigger secondary spark burst
+            const container = document.querySelector('.scratch-card-container');
+            const contRect = container.getBoundingClientRect();
+            spawnBurst(contRect.left + contRect.width/2, contRect.top + contRect.height/2, 15, 'star');
+        }, 800);
+    });
     
-    function checkScratchPercentage() {
-        // Run sparingly
-        if (Math.random() > 0.08) return;
-        
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const pixels = imgData.data;
-        let transparentPixels = 0;
-        
-        for (let i = 0; i < pixels.length; i += 4) {
-            if (pixels[i + 3] === 0) transparentPixels++;
-        }
-        
-        const pct = (transparentPixels / (pixels.length / 4)) * 100;
-        
-        // If scratched more than 40%, clear completely with a beautiful fade
-        if (pct > 40) {
-            canvas.style.transition = 'opacity 1s ease';
-            canvas.style.opacity = '0';
-            setTimeout(() => {
-                canvas.style.display = 'none';
-                // Explode massive congratulations confetti
-                const finalRect = canvas.getBoundingClientRect();
-                spawnBurst(finalRect.left + finalRect.width/2, finalRect.top + finalRect.height/2, 40, 'butterfly');
-                spawnBurst(finalRect.left + finalRect.width/2, finalRect.top + finalRect.height/2, 20, 'star');
-                // Play final birthday chord
-                if (audioCtx) {
-                    playTone(261.63, 100); // C4
-                    playTone(329.63, 100); // E4
-                    playTone(392.00, 100); // G4
-                    playTone(523.25, 600); // C5
-                }
-            }, 1000);
-        }
-    }
-    
-    // Event listeners for desktop & mobile drawing
-    canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
-    canvas.addEventListener('mousemove', scratch);
-    window.addEventListener('mouseup', () => { isDrawing = false; });
-    
-    // Mobile Touch listeners - preventDefault avoids panning/zooming while scratching
-    canvas.addEventListener('touchstart', (e) => { 
-        e.preventDefault();
-        isDrawing = true; 
-        scratch(e); 
-    }, { passive: false });
-    
-    canvas.addEventListener('touchmove', (e) => { 
-        e.preventDefault(); 
-        scratch(e); 
-    }, { passive: false });
-    
-    window.addEventListener('touchend', () => { isDrawing = false; });
-    window.addEventListener('touchcancel', () => { isDrawing = false; });
-    
-    scratchCanvasInitialized = true;
+    revealCardInitialized = true;
 }
 
 // Initial Kick-off
