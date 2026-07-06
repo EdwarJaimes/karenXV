@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Felices 15 Años, Karen Lorena</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas for Particles -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Background Music Box Control -->
+    <button id="music-btn" aria-label="Reproducir música de fondo" class="music-btn pulse">
+        <i class="fas fa-music"></i>
+    </button>
+
+    <!-- Main Stories Container -->
+    <div class="stories-container">
+        <!-- Top Progress Indicators -->
+        <div class="progress-container">
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+
+        <!-- Slide 1: Welcome -->
+        <div class="slide active" id="slide-1">
+            <div class="slide-content text-center">
+                <div class="frozen-crown">👑</div>
+                <h1 class="magic-title">Karen Lorena</h1>
+                <h2 class="magic-subtitle">Mis 15 Años Mágicos</h2>
+                <div class="slide-body">
+                    <p class="fade-in-text">Una historia de fuerza, magia y sueños diseñada especialmente para ti...</p>
+                </div>
+                <div class="tap-hint">
+                    <p>Toca para comenzar <i class="fas fa-chevron-right"></i></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Polaroid Photo -->
+        <div class="slide" id="slide-2">
+            <div class="slide-content">
+                <div class="polaroid-wrapper">
+                    <div class="polaroid">
+                        <img src="karen.jpg" alt="Karen Lorena" class="polaroid-img">
+                        <div class="polaroid-caption">Karen Lorena ✨ 15 Años</div>
+                    </div>
+                </div>
+                <div class="slide-body mt-4">
+                    <h3 class="slide-title">Una Fuerza Única</h3>
+                    <p class="slide-text text-justify">
+                        A veces el viento sopla frío y la vida nos presenta tormentas heladas... pero al igual que una hermosa flor bajo la nieve, has demostrado una fortaleza increíble para seguir floreciendo con tu hermosa sonrisa. Eres una guerrera.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Growth and Path -->
+        <div class="slide" id="slide-3">
+            <div class="slide-content">
+                <div class="magic-sphere">
+                    <div class="fairy-sparkle">🧚‍♀️</div>
+                </div>
+                <div class="slide-body">
+                    <h3 class="slide-title">El Viento a tu Favor</h3>
+                    <p class="slide-text">
+                        Hoy entras a una edad mágica, un nuevo capítulo donde comienzas a escribir tu propio destino. 
+                    </p>
+                    <div class="quote-box">
+                        "El pasado ya quedó atrás. Tu futuro brilla tanto como las estrellas en una noche despejada."
+                    </div>
+                    <p class="slide-text">
+                        Nunca olvides lo valiente, inteligente y capaz que eres. El mundo está listo para ver tu luz.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Interactive Gift Box -->
+        <div class="slide" id="slide-4">
+            <div class="slide-content text-center">
+                <h3 class="slide-title">Abre tu Corazón a la Magia</h3>
+                <p class="slide-text mb-4">Toca el regalo para liberar un deseo...</p>
+                
+                <div class="gift-container" id="gift-box">
+                    <div class="gift-lid"></div>
+                    <div class="gift-ribbon-y"></div>
+                    <div class="gift-ribbon-x"></div>
+                    <div class="gift-box-body"></div>
+                </div>
+
+                <div class="gift-message hidden" id="gift-message">
+                    <div class="heart-pulse-box">💖</div>
+                    <p class="magic-quote">"Que la esperanza guíe tus pasos y que nunca dejes de creer en la magia de tus sueños."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Scratch-to-reveal Card -->
+        <div class="slide" id="slide-5">
+            <div class="slide-content text-center">
+                <h3 class="slide-title">Un Mensaje de mi Corazón</h3>
+                <p class="slide-text mb-3">Rasca con tu dedo para descubrir la sorpresa final:</p>
+                
+                <div class="scratch-card-container">
+                    <div class="scratch-message">
+                        <h4 class="cursive-text">¡Feliz 15 Cumpleaños!</h4>
+                        <p class="message-body">
+                            Karen Lorena, eres nuestro mayor orgullo. Sé que el camino ha sido duro en ocasiones, pero tu valentía te hará volar muy alto. Pide un deseo al viento hoy... la vida se encargará de regalártelo. Te queremos con toda el alma.
+                        </p>
+                        <span class="signature">Con todo mi amor 💖</span>
+                    </div>
+                    <canvas id="scratch-canvas" width="300" height="350"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tap zones for navigation -->
+        <div class="nav-zone nav-left" id="nav-left"></div>
+        <div class="nav-zone nav-right" id="nav-right"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
