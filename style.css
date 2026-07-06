@@ -334,7 +334,7 @@ body, html {
     height: 120px;
     margin: 30px auto;
     cursor: pointer;
-    z-index: 10;
+    z-index: 95; /* Elevated above nav-zones (80) to receive touches */
 }
 
 .gift-box-body {
@@ -453,6 +453,7 @@ body, html {
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     background: white;
+    z-index: 95; /* Elevated above nav-zones to allow scratching on mobile */
 }
 
 .scratch-message {
