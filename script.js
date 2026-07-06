@@ -380,6 +380,11 @@ function initScratchCard() {
     const canvas = document.getElementById('scratch-canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     
+    // Set internal canvas resolution 1:1 with layout size for perfect touch mapping
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
     // Clear and draw cover
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -396,15 +401,15 @@ function initScratchCard() {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.font = '24px serif';
     ctx.fillText('❄️', 30, 60);
-    ctx.fillText('❄️', 260, 90);
-    ctx.fillText('❄️', 70, 310);
-    ctx.fillText('❄️', 240, 280);
-    ctx.fillText('✨', 150, 40);
-    ctx.fillText('✨', 140, 330);
+    ctx.fillText('❄️', canvas.width - 40, 90);
+    ctx.fillText('❄️', 70, canvas.height - 40);
+    ctx.fillText('❄️', canvas.width - 60, canvas.height - 70);
+    ctx.fillText('✨', canvas.width / 2, 40);
+    ctx.fillText('✨', canvas.width / 2 - 10, canvas.height - 20);
     
     // Instructional text
     ctx.fillStyle = '#4a6fa5';
-    ctx.font = 'bold 22px "Quicksand", sans-serif';
+    ctx.font = 'bold 20px "Quicksand", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('Rasca con tu dedo', canvas.width / 2, canvas.height / 2 - 20);
@@ -417,10 +422,22 @@ function initScratchCard() {
     function scratch(e) {
         if (!isDrawing) return;
         
-        const rect = canvas.getBoundingClientRect();
-        // Handle touch or mouse coordinates
-        const x = (e.targetTouches ? e.targetTouches[0].clientX : e.clientX) - rect.left;
-        const y = (e.targetTouches ? e.targetTouches[0].clientY : e.clientY) - rect.top;
+        const currentRect = canvas.getBoundingClientRect();
+        let clientX, clientY;
+        
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else if (e.targetTouches && e.targetTouches.length > 0) {
+            clientX = e.targetTouches[0].clientX;
+            clientY = e.targetTouches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
+        const x = clientX - currentRect.left;
+        const y = clientY - currentRect.top;
         
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();
@@ -429,10 +446,7 @@ function initScratchCard() {
         
         // Spawn sparks while scratching
         if (Math.random() < 0.3) {
-            const pageRect = canvas.getBoundingClientRect();
-            const pageX = (e.targetTouches ? e.targetTouches[0].clientX : e.clientX);
-            const pageY = (e.targetTouches ? e.targetTouches[0].clientY : e.clientY);
-            spawnBurst(pageX, pageY, 2, 'star');
+            spawnBurst(clientX, clientY, 2, 'star');
         }
         
         checkScratchPercentage();
@@ -452,16 +466,16 @@ function initScratchCard() {
         
         const pct = (transparentPixels / (pixels.length / 4)) * 100;
         
-        // If scratched more than 45%, clear completely with a beautiful fade
-        if (pct > 45) {
+        // If scratched more than 40%, clear completely with a beautiful fade
+        if (pct > 40) {
             canvas.style.transition = 'opacity 1s ease';
             canvas.style.opacity = '0';
             setTimeout(() => {
                 canvas.style.display = 'none';
                 // Explode massive congratulations confetti
-                const rect = canvas.getBoundingClientRect();
-                spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2, 40, 'butterfly');
-                spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2, 20, 'star');
+                const finalRect = canvas.getBoundingClientRect();
+                spawnBurst(finalRect.left + finalRect.width/2, finalRect.top + finalRect.height/2, 40, 'butterfly');
+                spawnBurst(finalRect.left + finalRect.width/2, finalRect.top + finalRect.height/2, 20, 'star');
                 // Play final birthday chord
                 if (audioCtx) {
                     playTone(261.63, 100); // C4
@@ -478,12 +492,20 @@ function initScratchCard() {
     canvas.addEventListener('mousemove', scratch);
     window.addEventListener('mouseup', () => { isDrawing = false; });
     
-    canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
-    canvas.addEventListener('touchmove', (e) => { 
-        e.preventDefault(); // Prevents scroll behavior while scratching
+    // Mobile Touch listeners - preventDefault avoids panning/zooming while scratching
+    canvas.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        isDrawing = true; 
         scratch(e); 
-    });
+    }, { passive: false });
+    
+    canvas.addEventListener('touchmove', (e) => { 
+        e.preventDefault(); 
+        scratch(e); 
+    }, { passive: false });
+    
     window.addEventListener('touchend', () => { isDrawing = false; });
+    window.addEventListener('touchcancel', () => { isDrawing = false; });
     
     scratchCanvasInitialized = true;
 }
