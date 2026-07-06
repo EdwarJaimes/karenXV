@@ -16,7 +16,14 @@
     <!-- Background Canvas for Particles -->
     <canvas id="particles-canvas"></canvas>
 
+    <!-- Background Music -->
+    <audio id="bg-music" src="AThousand.mp3" loop preload="auto"></audio>
+
     <!-- Background Music Box Control -->
+    <div class="music-hint" aria-hidden="true">
+        <span>Presiona el audio</span>
+        <div class="music-hint-arrow">↗</div>
+    </div>
     <button id="music-btn" aria-label="Reproducir música de fondo" class="music-btn pulse">
         <i class="fas fa-music"></i>
     </button>
@@ -52,7 +59,7 @@
             <div class="slide-content">
                 <div class="polaroid-wrapper">
                     <div class="polaroid">
-                        <img src="karen.jpg" alt="Karen Lorena" class="polaroid-img">
+                        <img src="karen.jpeg" alt="Karen Lorena" class="polaroid-img">
                         <div class="polaroid-caption">Karen Lorena ✨ 15 Años</div>
                     </div>
                 </div>
@@ -118,7 +125,7 @@
                         <p class="message-body">
                             Karen Lorena, eres nuestro mayor orgullo. Sé que el camino ha sido duro en ocasiones, pero tu valentía te hará volar muy alto. Pide un deseo al viento hoy... la vida se encargará de regalártelo. Te queremos con toda el alma.
                         </p>
-                        <span class="signature">Con todo mi amor 💖</span>
+                        <span class="signature">Con todo nuestro cariño 💖</span>
                     </div>
                     <div class="reveal-cover" id="reveal-cover">
                         <div class="reveal-sparkles">❄️ ✨ ❄️</div>
@@ -129,9 +136,6 @@
             </div>
         </div>
 
-        <!-- Tap zones for navigation -->
-        <div class="nav-zone nav-left" id="nav-left"></div>
-        <div class="nav-zone nav-right" id="nav-right"></div>
     </div>
 
     <script src="script.js"></script>

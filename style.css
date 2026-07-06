@@ -51,6 +51,29 @@ body, html {
 }
 
 /* Floating Music Control */
+.music-hint {
+    position: absolute;
+    top: 22px;
+    right: 70px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 101;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 6px 10px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(100, 181, 246, 0.15);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4a6fa5;
+    animation: floatHint 1.4s ease-in-out infinite alternate;
+}
+
+.music-hint-arrow {
+    font-size: 1rem;
+    color: #f48fb1;
+}
+
 .music-btn {
     position: absolute;
     top: 25px;
@@ -91,6 +114,11 @@ body, html {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 143, 177, 0.4); }
     70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(244, 143, 177, 0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 143, 177, 0); }
+}
+
+@keyframes floatHint {
+    from { transform: translateY(0); }
+    to { transform: translateY(-4px); }
 }
 
 /* Stories Layout */
@@ -146,6 +174,7 @@ body, html {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     transform: scale(0.95);
     padding: 80px 20px 40px 20px; /* Safe padding for progress indicators */
+    z-index: 10;
 }
 
 .slide.active {
@@ -169,25 +198,7 @@ body, html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-/* Navigation zones */
-.nav-zone {
-    position: absolute;
-    top: 80px;
-    bottom: 0;
-    width: 25%;
-    z-index: 80;
-    cursor: pointer;
-}
-
-.nav-left {
-    left: 0;
-}
-
-.nav-right {
-    right: 0;
-    width: 75%; /* Tapping right is more common to proceed */
+    position: relative;
 }
 
 /* Typography & Titles */
@@ -446,8 +457,9 @@ body, html {
 /* Scratch Card */
 .scratch-card-container {
     position: relative;
-    width: 300px;
-    height: 350px;
+    width: min(100%, 290px);
+    height: 340px;
+    max-height: min(70vh, 340px);
     margin: 10px auto;
     border-radius: 20px;
     overflow: hidden;
@@ -458,41 +470,46 @@ body, html {
 
 .scratch-message {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
+    inset: 0;
+    padding: 20px 16px;
     background: radial-gradient(circle, #FFF5F7 0%, #E8F8FA 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     z-index: 5;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
 }
 
 .cursive-text {
     font-family: var(--font-handwritten);
-    font-size: 2.2rem;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1.1;
     color: #4a6fa5;
-    margin-bottom: 12px;
+    margin: 0 0 8px;
 }
 
 .message-body {
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 8px;
+    line-height: 1.55;
     color: #555;
-    margin-bottom: 15px;
-    text-align: justify;
+    margin: 0 0 12px;
+    text-align: center;
     font-weight: 500;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .signature {
     font-family: var(--font-handwritten);
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: #f48fb1;
     font-weight: bold;
+    margin-top: auto;
 }
 
 .reveal-cover {
@@ -553,4 +570,126 @@ body, html {
 .slide-content::-webkit-scrollbar-thumb {
     background: rgba(100, 181, 246, 0.2);
     border-radius: 10px;
+}
+
+/* --- Mobile Responsiveness Adjustments --- */
+
+@media (max-width: 375px) {
+    .magic-title {
+        font-size: 2.8rem;
+    }
+    .magic-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+    .slide-content {
+        padding: 20px 15px;
+    }
+    .polaroid {
+        max-width: 170px;
+    }
+    .polaroid-img {
+        height: 170px;
+    }
+    .polaroid-caption {
+        font-size: 1.3rem;
+    }
+    .slide-title {
+        font-size: 1.8rem;
+    }
+    .slide-text {
+        font-size: 0.95rem;
+    }
+    .quote-box {
+        font-size: 0.9rem;
+        margin: 10px 0;
+        padding: 10px;
+    }
+    .scratch-card-container {
+        max-width: 250px;
+        height: 290px;
+    }
+    .cursive-text {
+        font-size: 1.7rem;
+    }
+    .message-body {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-height: 667px) {
+    /* For shorter screens like iPhone SE / 6/7/8 */
+    .stories-container {
+        padding: 15px 15px 30px 15px;
+    }
+    .slide {
+        padding: 60px 15px 30px 15px;
+    }
+    .slide-content {
+        max-height: 85vh;
+        padding: 15px 15px;
+    }
+    .frozen-crown {
+        font-size: 3rem;
+        margin-bottom: 5px;
+    }
+    .magic-title {
+        font-size: 2.3rem;
+    }
+    .magic-subtitle {
+        margin-bottom: 12px;
+    }
+    .polaroid {
+        max-width: 140px;
+        padding: 8px 8px 16px 8px;
+        margin-bottom: 5px;
+    }
+    .polaroid-img {
+        height: 140px;
+    }
+    .magic-sphere {
+        width: 65px;
+        height: 65px;
+        margin-bottom: 8px;
+    }
+    .fairy-sparkle {
+        font-size: 1.8rem;
+    }
+    .gift-container {
+        width: 85px;
+        height: 85px;
+        margin: 10px auto;
+    }
+    .gift-box-body {
+        width: 70px;
+        height: 62px;
+        left: 7px;
+    }
+    .gift-lid {
+        width: 85px;
+        height: 14px;
+    }
+    .gift-ribbon-y {
+        left: 35px;
+        height: 70px;
+        width: 12px;
+    }
+    .gift-ribbon-x {
+        top: 40px;
+        width: 70px;
+        height: 12px;
+        left: 7px;
+    }
+    .scratch-card-container {
+        max-width: 240px;
+        height: 280px;
+    }
+    .cursive-text {
+        font-size: 1.5rem;
+    }
+    .message-body {
+        font-size: 0.8rem;
+        line-height: 1.45;
+    }
 }

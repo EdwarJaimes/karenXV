@@ -159,23 +159,10 @@ window.addEventListener('touchstart', (e) => {
     spawnBurst(touch.clientX, touch.clientY, 8, 'star');
 });
 
-// Interactive Web Audio Synth (Ambient Music Box)
+// Interactive Web Audio Synth (for interactive sound effects)
 let audioCtx = null;
 let isMusicPlaying = false;
-let melodyTimeout = null;
-
-// Lullaby notes frequency & duration array (magical bells)
-const melody = [
-    {note: 'G5', dur: 500}, {note: 'E5', dur: 500}, {note: 'G5', dur: 500}, {note: 'C6', dur: 1000},
-    {note: 'B5', dur: 500}, {note: 'A5', dur: 500}, {note: 'G5', dur: 1000},
-    {note: 'A5', dur: 500}, {note: 'F5', dur: 500}, {note: 'A5', dur: 500}, {note: 'D6', dur: 1000},
-    {note: 'C6', dur: 500}, {note: 'B5', dur: 500}, {note: 'C6', dur: 1500},
-];
-
-const noteFreqs = {
-    'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
-    'C6': 1046.50, 'D6': 1174.66
-};
+const bgMusic = document.getElementById('bg-music');
 
 function playTone(freq, duration) {
     if (!audioCtx) return;
@@ -215,18 +202,6 @@ function playTone(freq, duration) {
     subOsc.stop(audioCtx.currentTime + duration/1000);
 }
 
-let noteIndex = 0;
-function playMelodyLoop() {
-    if (!isMusicPlaying) return;
-    
-    const current = melody[noteIndex];
-    const freq = noteFreqs[current.note];
-    playTone(freq, current.dur);
-    
-    noteIndex = (noteIndex + 1) % melody.length;
-    melodyTimeout = setTimeout(playMelodyLoop, current.dur + 100);
-}
-
 function startMusic() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -234,18 +209,22 @@ function startMusic() {
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
+    if (bgMusic) {
+        bgMusic.play().catch(err => console.log("Error al reproducir audio:", err));
+    }
     isMusicPlaying = true;
-    playMelodyLoop();
 }
 
 function stopMusic() {
+    if (bgMusic) {
+        bgMusic.pause();
+    }
     isMusicPlaying = false;
-    clearTimeout(melodyTimeout);
 }
 
 const musicBtn = document.getElementById('music-btn');
-musicBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // Avoid triggering slide navigation
+
+function toggleMusic() {
     if (isMusicPlaying) {
         stopMusic();
         musicBtn.classList.remove('playing');
@@ -253,6 +232,16 @@ musicBtn.addEventListener('click', (e) => {
         startMusic();
         musicBtn.classList.add('playing');
     }
+}
+
+musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Avoid triggering slide navigation
+    toggleMusic();
+});
+
+window.addEventListener('load', () => {
+    startMusic();
+    musicBtn.classList.add('playing');
 });
 
 // Slides Navigation Control
@@ -327,11 +316,25 @@ function prevSlide() {
     }
 }
 
-// Navigation Zones listeners
-document.getElementById('nav-left').addEventListener('click', prevSlide);
-document.getElementById('nav-right').addEventListener('click', () => {
-    // If we are on slide 4 and gift isn't open, or slide 5 and it isn't scratched, still allow tapping to proceed manually
-    nextSlide();
+// Container-level navigation listener
+document.querySelector('.stories-container').addEventListener('click', (e) => {
+    // Skip if clicking interactive elements
+    if (e.target.closest('#music-btn') || 
+        e.target.closest('#gift-box') || 
+        e.target.closest('#reveal-btn')) {
+        return;
+    }
+    
+    // Determine screen position
+    const width = window.innerWidth;
+    const clickX = e.clientX;
+    
+    // Tap left 30% to go back, right 70% to go forward
+    if (clickX < width * 0.3) {
+        prevSlide();
+    } else {
+        nextSlide();
+    }
 });
 
 // Interactive Gift Box Logic
